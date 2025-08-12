@@ -101,3 +101,27 @@ cargo tauri build     # Tauri paketlemesini yapar
   - `.env` dosyaları, editor/temp dosyaları
 
 ## Dizin Yapısı (özet)
+
+```
+src/
+  app/
+    editor/                 # Monaco tabanlı editör
+    components/             # Dialoglar, gezgin, bildirimler, ayarlar
+    services/               # Tauri komutlarıyla dosya ve export servisleri
+src-tauri/
+  src/                      # Rust kodları
+  tauri.conf.json           # Tauri yapılandırması
+  Cargo.toml                # Rust bağımlılıkları
+  target/ (ignore)          # Tauri derleme çıktıları
+  gen/ (ignore)             # Tauri tarafından üretilen dosyalar
+```
+
+## Sorun Giderme
+
+- Port çakışması (4300): `angular.json` veya komutta portu değiştirin (`ng serve --port 4301`).
+- Tauri bağımlılıkları eksik: Windows için C++ derleme araçları ve WebView2 Runtime kurulu olmalı.
+- Monaco yüklenemiyor uyarısı: Uygulama basit textarea moduna düşer; ağ/senkronizasyon sorunlarını kontrol edin.
+
+## Lisans
+
+Bu proje Apache 2.0 lisansı ile lisanslanmıştır. Ayrıntılar için `LICENSE` dosyasına bakın.
