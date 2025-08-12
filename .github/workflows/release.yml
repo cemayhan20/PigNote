@@ -4,7 +4,12 @@ on:
   push:
     tags:
       - 'v*.*.*'
-  workflow_dispatch: {}
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Yayınlanacak etiket (ör. v0.1.1)'
+        required: true
+        type: string
 
 jobs:
   build:
@@ -24,6 +29,9 @@ jobs:
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
 
+      - name: Install NSIS (Windows installer builder)
+        run: choco install nsis -y
+
       - name: Install frontend deps
         run: npm ci
 
@@ -36,9 +44,9 @@ jobs:
 
       - name: Upload only setup.exe to Release
         uses: softprops/action-gh-release@v2
-        if: startsWith(github.ref, 'refs/tags/')
         with:
           files: src-tauri/target/release/bundle/nsis/*-setup.exe
+          tag_name: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.tag || github.ref_name }}
           draft: false
           prerelease: false
           generate_release_notes: true
