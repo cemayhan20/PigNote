@@ -1,0 +1,33 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "PigNote",
+  "version": "0.1.0",
+  "identifier": "com.pignote.app",
+  "build": {
+    "frontendDist": "../dist/frontend/browser",
+    "devUrl": "http://localhost:4300",
+    "beforeDevCommand": "npm run dev",
+    "beforeBuildCommand": "npm run build"
+  },
+  "app": {
+    "windows": [
+      {
+        "title": "PigNote",
+        "width": 800,
+        "height": 600,
+        "resizable": true,
+        "fullscreen": false
+      }
+    ],
+    "security": {
+      "csp": null
+    }
+  },
+  "bundle": {
+    "active": true,
+    "targets": "all",
+    "icon": [
+      "icons/Pignote.ico"
+    ]
+  }
+}

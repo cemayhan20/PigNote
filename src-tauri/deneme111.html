@@ -1,0 +1,285 @@
+
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="UTF-8">
+            <title>deneme111</title>
+            <style>
+                @media print {
+                    body { 
+                        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+                        line-height: 1.6;
+                        margin: 20mm;
+                        background: white;
+                        color: #333;
+                        font-size: 12pt;
+                    }
+                    h1, h2, h3, h4, h5, h6 { color: #2c3e50; margin-top: 20pt; margin-bottom: 10pt; }
+                    h1 { font-size: 18pt; border-bottom: 1pt solid #eee; padding-bottom: 5pt; }
+                    h2 { font-size: 16pt; border-bottom: 1pt solid #eee; padding-bottom: 3pt; }
+                    code { background: #f8f9fa; padding: 1pt 2pt; border-radius: 2pt; font-family: 'Courier New', monospace; }
+                    pre { background: #f8f9fa; padding: 10pt; border-radius: 3pt; overflow-x: auto; border-left: 3pt solid #007acc; }
+                    blockquote { border-left: 3pt solid #ddd; margin: 0; padding-left: 15pt; color: #666; font-style: italic; }
+                    img { max-width: 100%; height: auto; }
+                    ul, ol { padding-left: 15pt; }
+                    li { margin-bottom: 3pt; }
+                    p { margin-bottom: 10pt; }
+                    table { 
+                        border-collapse: collapse; 
+                        width: 100%; 
+                        margin: 15pt 0; 
+                        font-size: 10pt;
+                        page-break-inside: avoid;
+                    }
+                    th, td { 
+                        border: 1pt solid #ddd; 
+                        padding: 6pt; 
+                        text-align: left; 
+                        vertical-align: top;
+                        word-wrap: break-word;
+                    }
+                    th { 
+                        background-color: #f8f9fa; 
+                        font-weight: bold;
+                        color: #2c3e50;
+                    }
+                    thead { 
+                        background-color: #f8f9fa;
+                    }
+                    tbody tr:nth-child(even) {
+                        background-color: #fafafa;
+                    }
+                    tbody tr:hover {
+                        background-color: #f5f5f5;
+                    }
+                }
+                body { 
+                    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+                    line-height: 1.6;
+                    margin: 40px;
+                    background: white;
+                    color: #333;
+                    max-width: 800px;
+                    margin: 40px auto;
+                }
+                h1, h2, h3, h4, h5, h6 { color: #2c3e50; margin-top: 30px; margin-bottom: 15px; }
+                h1 { font-size: 2em; border-bottom: 2px solid #eee; padding-bottom: 10px; }
+                h2 { font-size: 1.5em; border-bottom: 1px solid #eee; padding-bottom: 5px; }
+                code { background: #f8f9fa; padding: 2px 4px; border-radius: 3px; font-family: 'Courier New', monospace; }
+                pre { background: #f8f9fa; padding: 15px; border-radius: 5px; overflow-x: auto; border-left: 4px solid #007acc; }
+                blockquote { border-left: 4px solid #ddd; margin: 0; padding-left: 20px; color: #666; font-style: italic; }
+                img { max-width: 100%; height: auto; }
+                ul, ol { padding-left: 20px; }
+                li { margin-bottom: 5px; }
+                p { margin-bottom: 15px; }
+                table { 
+                    border-collapse: collapse; 
+                    width: 100%; 
+                    margin: 20px 0; 
+                    font-size: 14px;
+                }
+                th, td { 
+                    border: 1px solid #ddd; 
+                    padding: 8px; 
+                    text-align: left; 
+                    vertical-align: top;
+                    word-wrap: break-word;
+                }
+                th { 
+                    background-color: #f8f9fa; 
+                    font-weight: bold;
+                    color: #2c3e50;
+                }
+                thead { 
+                    background-color: #f8f9fa;
+                }
+                tbody tr:nth-child(even) {
+                    background-color: #fafafa;
+                }
+                tbody tr:hover {
+                    background-color: #f5f5f5;
+                }
+            </style>
+        </head>
+        <body>
+            <h1>Proje Planı: Yeni Ürün Geliştirme Süreci</h1>
+<blockquote>
+<p>“İyi bir plan, başarının yarısıdır.”</p>
+<p>– Üstün Yönetim Rehberi</p>
+</blockquote>
+<p>---</p>
+<h2>İçindekiler</h2>
+<ol>
+<li><a href="#amaç-ve-kapsam">Amaç ve Kapsam</a></li>
+<li><a href="#zaman-çizelgesi">Zaman Çizelgesi</a></li>
+<li><a href="#ekip-ve-roller">Ekip ve Roller</a></li>
+<li><a href="#sprint-planı">Sprint Planı</a></li>
+<li><a href="#risk-analizi">Risk Analizi</a></li>
+<li><a href="#teknik-mimarî">Teknik Mimarî</a></li>
+<li><a href="#görev-listesi">Görev Listesi</a></li>
+<li><a href="#iletişim-ve-raporlama">İletişim ve Raporlama</a></li>
+<li><a href="#notlar-ve-kaynaklar">Notlar ve Kaynaklar</a></li>
+</ol>
+<p>---</p>
+<h2>Amaç ve Kapsam</h2>
+<p>Yeni ürün geliştirme sürecindeki ana hedefler:</p>
+<ul>
+<li><strong>Pazar ihtiyacını doğrulamak<strong></li>
+<li><strong>Çekirdek özellikleri<strong> 4 hafta içinde prototiplemek</li>
+<li><strong>Kullanıcı testleri<strong> ile erken geri bildirim toplamak</li>
+<li><strong>MVP’yi<strong> 3 ay içinde yayına almak</li>
+</ul>
+<p>---</p>
+<h2>Zaman Çizelgesi</h2>
+<table>
+<thead>
+<tr>
+<th>Aşama</th>
+<th>Süre</th>
+<th>Başlangıç</th>
+<th>Bitiş</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Keşif ve Analiz</td>
+<td>2 hafta</td>
+<td>01.09.2025</td>
+<td>14.09.2025</td>
+</tr>
+<tr>
+<td>Tasarım</td>
+<td>3 hafta</td>
+<td>15.09.2025</td>
+<td>05.10.2025</td>
+</tr>
+<tr>
+<td>Geliştirme (Sprint 1)</td>
+<td>2 hafta</td>
+<td>06.10.2025</td>
+<td>19.10.2025</td>
+</tr>
+<tr>
+<td>Geliştirme (Sprint 2)</td>
+<td>2 hafta</td>
+<td>20.10.2025</td>
+<td>02.11.2025</td>
+</tr>
+<tr>
+<td>Test & Düzeltme</td>
+<td>2 hafta</td>
+<td>03.11.2025</td>
+<td>16.11.2025</td>
+</tr>
+<tr>
+<td>Yayın Hazırlığı</td>
+<td>1 hafta</td>
+<td>17.11.2025</td>
+<td>23.11.2025</td>
+</tr>
+</tbody>
+</table>
+<p>---</p>
+<h2>Ekip ve Roller</h2>
+<table>
+<thead>
+<tr>
+<th>Kişi</th>
+<th>Rol</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Cem</td>
+<td>Proje Yöneticisi (PM)</td>
+</tr>
+<tr>
+<td>Ayşe</td>
+<td>UX/UI Tasarımcısı</td>
+</tr>
+<tr>
+<td>Mehmet</td>
+<td>Backend Geliştirici</td>
+</tr>
+<tr>
+<td>Elif</td>
+<td>Frontend Geliştirici</td>
+</tr>
+<tr>
+<td>Tolga</td>
+<td>QA & Test Mühendisi</td>
+</tr>
+</tbody>
+</table>
+<p>---</p>
+<h2>Sprint Planı</h2>
+<p><details></p>
+<p><summary>🚀 Sprint 1: Temel API ve Veritabanı</summary></p>
+<ol>
+<li>RESTful API altyapısının oluşturulması</li>
+<li>User model & Authentication</li>
+<li>Veritabanı şeması tasarımı</li>
+<li>Postman ile temel CRUD testleri</li>
+</ol>
+<p></details></p>
+<p><details></p>
+<p><summary>✨ Sprint 2: Ön Yüz & Kullanıcı Akışı</summary></p>
+<ol>
+<li>Anasayfa & Giriş Formu</li>
+<li>Dashboard görünümleri</li>
+<li>Responsive düzen</li>
+<li>İlk kullanıcı testi</li>
+</ol>
+<p></details></p>
+<p>---</p>
+<h2>Risk Analizi</h2>
+<table>
+<thead>
+<tr>
+<th>Risk</th>
+<th>Olasılık</th>
+<th>Etki</th>
+<th>Önlem</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>API performans sorunları</td>
+<td>Orta</td>
+<td>Yüksek</td>
+<td>Load testing, cache katmanı ekleme</td>
+</tr>
+<tr>
+<td>Tasarım uyumsuzlukları</td>
+<td>Düşük</td>
+<td>Orta</td>
+<td>Erken prototip testleri, haftalık buluşmalar</td>
+</tr>
+<tr>
+<td>Zaman çizelgesi gecikmeleri</td>
+<td>Orta</td>
+<td>Yüksek</td>
+<td>Kritik yol takibi, ikincil görevlerin paralelleştirilmesi</td>
+</tr>
+<tr>
+<td>Kaynak yetersizliği</td>
+<td>Düşük</td>
+<td>Yüksek</td>
+<td>Freelance destek, öncelik sıralaması</td>
+</tr>
+</tbody>
+</table>
+<p>---</p>
+<h2>Teknik Mimarî</h2>
+<pre><code>flowchart TD
+  A[Kullanıcı] -->|HTTP| B[Frontend (React)]
+  B --> C[API Gateway]
+  C --> D[Auth Service]
+  C --> E[Product Service]
+  E --> F[(PostgreSQL)]
+  D --> G[(Redis Cache)]
+</code></pre>
+
+        </body>
+        </html>
+        

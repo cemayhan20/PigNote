@@ -1,0 +1,63 @@
+# See https://docs.github.com/get-started/getting-started-with-git/ignoring-files for more about ignoring files.
+
+# Compiled output
+/dist
+/tmp
+/out-tsc
+/bazel-out
+/target
+/src-tauri/target
+
+# Tauri (generated files)
+/src-tauri/gen
+
+
+# Node
+/node_modules
+npm-debug.log
+yarn-error.log
+pnpm-debug.log*
+npm-debug.log*
+
+# Environment files (keep examples)
+.env
+.env.*
+.vscode
+!.env.example
+src-tauri/.env
+src-tauri/.env.*
+!src-tauri/.env.example
+
+# IDEs and editors
+.idea/
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.sublime-workspace
+
+# Visual Studio Code
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+.history/*
+
+# Editor swap files
+*.swp
+*.swo
+
+# Miscellaneous
+/.angular/cache
+.sass-cache/
+/connect.lock
+/coverage
+/libpeerconnection.log
+testem.log
+/typings
+
+# System files
+.DS_Store
+Thumbs.db

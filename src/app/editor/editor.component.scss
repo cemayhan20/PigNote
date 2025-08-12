@@ -1,0 +1,1562 @@
+/* Modern Minimal Editor Design - Apple Style */
+.editor-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+/* Ana Editör ve Önizleme Alanı */
+.editor-preview {
+  display: flex;
+  flex: 1;
+  position: relative;
+  /* Monaco context menüsü ve widget'ların taşmasını engelleme */
+  overflow: visible;
+  height: calc(100vh - 56px);
+  min-height: 0;
+}
+
+/* Editor pane: toolbar + monaco */
+.editor-pane {
+  display: flex;
+  flex-direction: column;
+  width: 50%;
+  min-width: 300px;
+  min-height: 0;
+  gap: 0;
+}
+
+.editor-pane.full-width {
+  width: 100% !important;
+}
+
+.editor-pane.full-width .monaco-container {
+  border-right: none;
+}
+
+/* Toolbar */
+.editor-toolbar {
+  display: flex;
+  align-items: center;
+  gap: clamp(4px, 1.5vw, 8px);
+  padding: 6px 8px;
+  background: rgba(255, 255, 255, 0.6);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  position: sticky;
+  top: 0;
+  z-index: 3;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+/* Dark theme for the editor toolbar (only style, no layout changes) */
+:host-context(.dark-theme) .editor-toolbar {
+  background: rgb(15, 15, 15) !important;
+  border-bottom: 1px solid #2a2a2a !important;
+  color: #f8fafc;
+}
+
+/* ---- Monaco koyu tema: sağdaki açık gri boşluğu kaldırmak için minimum ve güvenli düzeltmeler ---- */
+/* Not: Sadece yerleşimi bozan katmanları 100% genişliğe sabitliyoruz ve arka planı koyu yapıyoruz. */
+
+:host-context(.dark-theme) .monaco-container .monaco-editor,
+:host-context(.dark-theme) .monaco-container .monaco-editor .overflow-guard,
+:host-context(.dark-theme) .monaco-container .monaco-editor .monaco-scrollable-element,
+:host-context(.dark-theme) .monaco-container .monaco-editor .monaco-viewport {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+/* Arka planları koyu tona eşitle (açık gri görünümü engeller) */
+:host-context(.dark-theme) .monaco-container .monaco-editor,
+:host-context(.dark-theme) .monaco-container .monaco-editor .monaco-editor-background,
+:host-context(.dark-theme) .monaco-container .monaco-editor .monaco-viewport,
+:host-context(.dark-theme) .monaco-container .monaco-editor .monaco-scrollable-element,
+:host-context(.dark-theme) .monaco-container .monaco-editor .view-overlays {
+  background: #0f172a !important;
+}
+
+/* İç katmanlarda yanlış hizalamaya sebep olabilecek transform/translate etkilerini nötrle */
+/* Scroll katmanı için transform'u nötrlemek güvenli, ancak satırların hizasını (view-lines) asla bozma */
+:host-context(.dark-theme) .monaco-container .monaco-editor .monaco-scrollable-element {
+  transform: none !important;
+}
+
+:host-context(.dark-theme) .editor-toolbar .toolbar-btn {
+  background: #0d0d0d !important; /* daha koyu nötr gri */
+  border: 1px solid #212121 !important;
+  color: #f8fafc !important;
+}
+
+:host-context(.dark-theme) .editor-toolbar .toolbar-btn:hover {
+  background: #141414 !important; /* hafifçe açık ama hâlâ koyu */
+  border-color: #282828 !important;
+}
+
+.editor-toolbar .toolbar-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px clamp(8px, 1.2vw, 12px);
+  min-height: 26px;
+  font-size: clamp(11px, 1.3vw, 12px);
+  font-weight: 500;
+  color: #1d1d1f;
+  background: rgba(255, 255, 255, 0.5);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease, transform 0.1s ease;
+  text-decoration: none;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.editor-toolbar .toolbar-btn:hover {
+  background: rgba(255, 255, 255, 0.8);
+  border-color: rgba(0, 0, 0, 0.15);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+}
+
+.editor-toolbar .toolbar-btn:active {
+  transform: translateY(0);
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.1);
+}
+
+.toolbar-divider {
+  width: 1px;
+  height: 20px;
+  background: rgba(0,0,0,0.1);
+  margin: 0 4px;
+}
+
+/* Modern Monaco Editor Container - Apple Style */
+.monaco-container {
+  width: 100%;
+  min-width: 300px;
+  height: auto;
+  flex: 1;
+  min-height: 0;
+  position: relative;
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-right: 1px solid rgba(0, 0, 0, 0.1);
+  /* Menü ve hover widget'larının taşmasına izin ver */
+  overflow: visible;
+  z-index: 1;
+  transition: width 0.3s ease;
+  display: flex;
+  flex-direction: column;
+}
+
+.monaco-container.full-width {
+  width: 100% !important;
+  border-right: none;
+}
+
+.monaco-container .monaco-editor {
+  flex: 1;
+  height: 100% !important;
+  min-height: 0;
+}
+
+/* Monaco context menüsü ve widget'ları her zaman üstte ve klipsiz görünsün */
+.monaco-container .monaco-editor .context-view,
+.monaco-editor .context-view,
+.monaco-editor .suggest-widget,
+.monaco-editor .parameter-hints-widget,
+.monaco-editor .monaco-hover,
+.monaco-editor .hover-widget,
+.monaco-editor .editor-widget {
+  position: absolute !important;
+  z-index: 10000 !important;
+  overflow: visible !important;
+}
+
+/* Checklist glyph margin ikonları */
+.pn-checkbox-unchecked {
+  background: none;
+}
+.pn-checkbox-unchecked::before {
+  content: '☐';
+  position: absolute;
+  left: 4px;
+  top: 2px;
+  font-size: 14px;
+  color: #64748b;
+}
+
+.pn-checkbox-checked {
+  background: none;
+}
+.pn-checkbox-checked::before {
+  content: '☑';
+  position: absolute;
+  left: 4px;
+  top: 2px;
+  font-size: 14px;
+  color: #10b981; /* yeşil */
+}
+
+/* Editör panelinde monaco konteyneri tam genişlikte ve esnek büyüsün */
+.editor-pane > .monaco-container {
+  flex: 1 1 auto;
+  align-self: stretch;
+  width: 100% !important;
+}
+
+.monaco-container .monaco-editor .overflow-guard {
+  height: 100% !important;
+  /* Taşan içeriklerin (context menu vb.) kliplenmesini önle */
+  overflow: visible !important;
+}
+
+.monaco-container .monaco-editor .monaco-scrollable-element {
+  height: 100% !important;
+  overflow: auto !important;
+}
+
+/* Modern Scrollbar Styling for Monaco Editor - Apple Style */
+.monaco-container .monaco-editor .monaco-scrollable-element::-webkit-scrollbar {
+  width: 8px;
+}
+
+.monaco-container .monaco-editor .monaco-scrollable-element::-webkit-scrollbar-track {
+  background: rgba(241, 241, 241, 0.5);
+  border-radius: 6px;
+  margin: 2px;
+}
+
+.monaco-container .monaco-editor .monaco-scrollable-element::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.15);
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.2s ease;
+}
+
+.monaco-container .monaco-editor .monaco-scrollable-element::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.25);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.monaco-container .monaco-editor .monaco-scrollable-element::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+/* Preview Container Scrollbar Styling - Apple Style */
+.preview-container::-webkit-scrollbar {
+  width: 8px;
+}
+
+.preview-container::-webkit-scrollbar-track {
+  background: rgba(241, 241, 241, 0.5);
+  border-radius: 6px;
+  margin: 2px;
+}
+
+.preview-container::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.15);
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.2s ease;
+}
+
+.preview-container::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.25);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.preview-container::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+/* Preview Container Content */
+.preview-container > * {
+  flex: 1;
+  overflow-y: auto;
+  min-height: 0;
+  /* Scrollbar'ı daha sağa almak için içerik alanını genişletiyoruz */
+  margin-right: -72px; /* .preview-container sağ iç boşluğuna eşit negatif margin */
+  padding-right: 72px; /* içerik ile scrollbar arasında ekstra boşluk */
+}
+
+/* Preview içeriğinin en altında her zaman ekstra pay bırak */
+.preview-container > *::after {
+  content: '';
+  display: block;
+  height: 60px; /* alttan boşluk */
+}
+
+/* Markdown Scrollbar Styling - Apple Style */
+::ng-deep markdown::-webkit-scrollbar {
+  width: 8px;
+}
+
+::ng-deep markdown::-webkit-scrollbar-track {
+  background: rgba(241, 241, 241, 0.5);
+  border-radius: 6px;
+  margin: 2px;
+}
+
+::ng-deep markdown::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.15);
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.2s ease;
+}
+
+::ng-deep markdown::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.25);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+::ng-deep markdown::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+/* Modern Resizer - Apple Style */
+.resizer {
+  width: 1px;
+  background: rgba(0, 0, 0, 0.1);
+  cursor: col-resize;
+  position: relative;
+  transition: all 0.2s ease;
+  z-index: 10;
+}
+
+.resizer:hover {
+  background: rgba(236, 72, 153, 0.85);
+  width: 2px;
+}
+
+.resizer:active {
+  background: rgba(236, 72, 153, 1);
+  width: 2px;
+}
+
+/* Modern Önizleme Alanı - Apple Style */
+.preview-container {
+  min-width: 300px;
+  height: calc(100vh - 44px);
+  /* Sağ boşluğu arttır */
+  padding: 40px 72px 40px 48px;
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  overflow: hidden;
+  border-left: 1px solid rgba(0, 0, 0, 0.1);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+  line-height: 1.6;
+  color: #1d1d1f;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  position: relative;
+}
+
+/* Toolbar'ı sağa uzat ve preview üzerinde de görünür kıl */
+/* Toolbar artık iki panelin üstünde, tüm genişlikte */
+.editor-toolbar { width: 100%; }
+
+/* Koyu tema: toolbar preview üzerinde de görünür olsun */
+:host-context(.dark-theme) .editor-toolbar {
+  background: rgba(26, 26, 26, 0.8) !important;
+  border-bottom: 1px solid #2a2a2a !important;
+}
+
+/* Modern Markdown Preview Styling */
+.preview-container ::ng-deep {
+  /* Son element ile container arasında boşluk */
+  > *:last-child {
+    margin-bottom: 60px;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    margin-top: 2em;
+    margin-bottom: 1em;
+    color: #6b7280;
+    font-weight: 600;
+    line-height: 1.3;
+  }
+
+  h1 {
+    font-size: 2.5em;
+    border-bottom: 2px solid #e1e8ed;
+    padding-bottom: 0.5em;
+    margin-top: 0;
+  }
+
+  h2 {
+    font-size: 2em;
+    border-bottom: 1px solid #e1e8ed;
+    padding-bottom: 0.4em;
+  }
+
+  h3 {
+    font-size: 1.5em;
+  }
+
+  h4 {
+    font-size: 1.25em;
+  }
+
+  p {
+    margin-bottom: 1.5em;
+    color: #6b7280;
+    line-height: 1.7;
+  }
+
+  code {
+    background: #f8f9fa;
+    border-radius: 6px;
+    font-size: 0.9em;
+    padding: 0.3em 0.6em;
+    color: #e83e8c;
+    font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+  }
+
+  pre {
+    background: #f8f9fa;
+    border-radius: 12px;
+    padding: 20px;
+    overflow-x: auto;
+    margin: 1.5em 0;
+    border: 1px solid #e1e8ed;
+  }
+
+  pre code {
+    background: none;
+    padding: 0;
+    color: #6b7280;
+  }
+
+  blockquote {
+    border-left: 4px solid var(--accent-500);
+    padding: 16px 24px;
+    margin: 1.5em 0;
+    color: #6c757d;
+    background: #f8f9fa;
+    border-radius: 0 8px 8px 0;
+  }
+
+  ul, ol {
+    margin: 1.5em 0;
+    padding-left: 2.5em;
+  }
+
+  li {
+    margin: 0.5em 0;
+    line-height: 1.6;
+  }
+
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    margin: 1.5em 0;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  th, td {
+    border: 1px solid #e1e8ed;
+    padding: 12px 16px;
+    text-align: left;
+  }
+
+  th {
+    background: #f8f9fa;
+    font-weight: 600;
+    color: #6b7280;
+  }
+
+  a {
+    color: var(--accent-500);
+    text-decoration: none;
+    transition: color 0.2s ease;
+  }
+
+  a:hover {
+    color: var(--accent-600);
+    text-decoration: underline;
+  }
+
+  img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+    margin: 1em 0;
+  }
+
+  hr {
+    border: none;
+    height: 1px;
+    background: #e1e8ed;
+    margin: 2em 0;
+  }
+}
+
+/* Modern Save Notification */
+.save-notification {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  background: #ffffff;
+  color: #b1b3b4;
+  padding: 16px 20px;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 500;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+  z-index: 1000;
+  animation: slideIn 0.3s ease;
+  border: 1px solid #e1e8ed;
+  min-width: 200px;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+/* Modern Markdown Content Styling */
+::ng-deep markdown {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+  line-height: 1.6;
+  color: #6b7280;
+  flex: 1;
+  overflow-y: auto;
+  min-height: 0;
+  max-height: 100%;
+  padding-right: 0;
+  padding-left: 0;
+  padding-bottom: 40px;
+}
+
+/* Task list (GFM) checkbox stilini düzelt */
+::ng-deep markdown input[type="checkbox"] {
+  width: 14px;
+  height: 14px;
+  vertical-align: text-bottom;
+  margin-right: 8px;
+}
+
+/* Dark theme accent for markdown task list checkboxes */
+body.dark-theme ::ng-deep markdown input[type="checkbox"] {
+  accent-color: var(--accent-500);
+  background-color: #334155;
+  border-color: #475569;
+}
+
+::ng-deep markdown li.task-list-item {
+  list-style: none; /* baştaki nokta/simgeyi kaldır */
+}
+
+/* Tarayıcı sınıf eklemezse, checkbox içeren li'larda noktayı kaldır (modern tarayıcılarda) */
+::ng-deep markdown li:has(> input[type="checkbox"]) {
+  list-style: none;
+}
+
+::ng-deep markdown ul.task-list {
+  padding-left: 0.2em; /* checkbox'a yakın hizalama */
+}
+
+::ng-deep markdown h1,
+::ng-deep markdown h2,
+::ng-deep markdown h3,
+::ng-deep markdown h4,
+::ng-deep markdown h5,
+::ng-deep markdown h6 {
+  margin-top: 2em;
+  margin-bottom: 1em;
+  font-weight: 600;
+  line-height: 1.3;
+  color: #6b7280;
+}
+
+::ng-deep markdown h1 {
+  font-size: 2.5em;
+  border-bottom: 2px solid #e1e8ed;
+  padding-bottom: 0.5em;
+  margin-top: 0;
+}
+
+::ng-deep markdown h2 {
+  font-size: 2em;
+  border-bottom: 1px solid #e1e8ed;
+  padding-bottom: 0.4em;
+}
+
+::ng-deep markdown h3 {
+  font-size: 1.5em;
+}
+
+::ng-deep markdown h4 {
+  font-size: 1.25em;
+}
+
+::ng-deep markdown p {
+  margin-bottom: 1.5em;
+  line-height: 1.7;
+  color: #6b7280;
+}
+
+::ng-deep markdown ul,
+::ng-deep markdown ol {
+  margin-bottom: 1.5em;
+  padding-left: 2.5em;
+}
+
+::ng-deep markdown li {
+  margin-bottom: 0.5em;
+  line-height: 1.6;
+  color: #6b7280;
+}
+
+::ng-deep markdown blockquote {
+  margin: 1.5em 0;
+  padding: 16px 24px;
+  color: #6c757d;
+  border-left: 4px solid var(--accent-500);
+  background: #f8f9fa;
+  border-radius: 0 8px 8px 0;
+}
+
+::ng-deep markdown code {
+  background: #f8f9fa;
+  padding: 0.3em 0.6em;
+  border-radius: 6px;
+  font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+  font-size: 0.9em;
+  color: #e83e8c;
+}
+
+::ng-deep markdown pre {
+  background: #f8f9fa;
+  padding: 20px;
+  border-radius: 12px;
+  overflow-x: auto;
+  margin: 1.5em 0;
+  border: 1px solid #e1e8ed;
+}
+
+::ng-deep markdown pre code {
+  background: none;
+  border: none;
+  color: #2c3e50;
+}
+
+::ng-deep markdown table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 1.5em 0;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+::ng-deep markdown th,
+::ng-deep markdown td {
+  border: 1px solid #e1e8ed;
+  padding: 12px 16px;
+  text-align: left;
+}
+
+::ng-deep markdown th {
+  background: #f8f9fa;
+  font-weight: 600;
+  color: #6b7280;
+}
+
+::ng-deep markdown img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+  margin: 1em 0;
+}
+
+::ng-deep markdown a {
+  color: var(--accent-500);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+::ng-deep markdown a:hover {
+  color: var(--accent-600);
+  text-decoration: underline;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .editor-preview { flex-direction: column; height: auto; min-height: 100%; }
+  .editor-pane { width: 100%; min-width: 0; }
+  .resizer { display: none; }
+  .preview-container { min-width: 0; width: 100% !important; padding: 20px 20px 28px; height: auto; border-left: none; border-top: 1px solid rgba(0,0,0,0.1); }
+  .preview-container > * { margin-right: 0; padding-right: 0; }
+
+  .save-notification {
+    bottom: 16px;
+    right: 16px;
+    padding: 12px 16px;
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 480px) {
+  .editor-toolbar { flex-wrap: wrap; gap: 6px; }
+  .preview-container { padding: 16px 16px 24px; }
+  .preview-container > * { margin-right: 0; padding-right: 0; }
+  .save-notification {
+    bottom: 12px;
+    right: 12px;
+    padding: 10px 14px;
+    font-size: 12px;
+    min-width: 180px;
+  }
+}
+
+/* ===== DARK THEME ===== */
+body.dark-theme .editor-container {
+  background: #0f172a;
+}
+
+body.dark-theme .editor-preview {
+  background: #0f172a;
+}
+
+body.dark-theme .monaco-container {
+  background: #1e293b;
+  border-right: 1px solid #334155;
+  position: relative !important;
+  overflow: hidden !important;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+/* Monaco editörün koyu temada düzgün hizalanması için */
+body.dark-theme .monaco-container .monaco-editor {
+  background: #0f172a !important;
+  /* Monaco kendi layout'unu yönetir; relative + overflow: hidden bazı hizalamaları bozabiliyor */
+  width: 100% !important;
+  height: 100% !important;
+}
+
+body.dark-theme .monaco-container .monaco-editor .monaco-editor-background {
+  background: #0f172a !important;
+}
+
+body.dark-theme .monaco-container .monaco-editor .margin {
+  background: #0f172a !important;
+  border-right: 1px solid #334155;
+}
+
+body.dark-theme .monaco-container .monaco-editor .overflow-guard {
+  background: #0f172a !important;
+}
+
+body.dark-theme .monaco-container .monaco-editor .monaco-scrollable-element {
+  background: #0f172a !important;
+}
+
+body.dark-theme .monaco-container .monaco-editor .view-lines {
+  background: #0f172a !important;
+  position: relative !important;
+  width: 100% !important;
+}
+
+body.dark-theme .monaco-container .monaco-editor .view-overlays {
+  background: #0f172a !important;
+}
+
+/* Minimap'i koyu temada gizle */
+body.dark-theme .monaco-container .monaco-editor .minimap {
+  display: none !important;
+}
+
+body.dark-theme .monaco-container .monaco-editor .minimap-shadow-visible {
+  display: none !important;
+}
+
+/* Scrollbar'ı sağa hizala (layout'a müdahale etmeden) */
+body.dark-theme .monaco-container .monaco-editor .monaco-scrollable-element {
+  /* boş */
+}
+
+/* Monaco editörün tüm iç elemanlarını koyu temaya uyarla */
+/* Tüm alt elemanları boyamayalım; bu satır başı/renk hataları doğurabiliyor */
+
+/* Monaco editörün sağ kenarını düzeltmeyelim; Monaco kendisi yönetir */
+
+body.dark-theme .monaco-container .monaco-editor .monaco-editor-background .monaco-viewport {
+  background: #0f172a !important;
+}
+
+body.dark-theme .monaco-container .monaco-editor .monaco-editor-background .monaco-viewport .monaco-view-overlays {
+  background: #0f172a !important;
+}
+
+body.dark-theme .monaco-container .monaco-editor .monaco-editor-background .monaco-scrollable-element {
+  background: #0f172a !important;
+}
+
+/* Monaco editörün tüm katmanlarını koyu temaya uyarla */
+body.dark-theme .monaco-container .monaco-editor .monaco-editor-background .monaco-viewport .monaco-view-overlays .monaco-view-overlay {
+  background: #0f172a !important;
+}
+
+body.dark-theme .editor-toolbar {
+  background: #0f172a;
+  border-bottom-color: #334155;
+}
+
+body.dark-theme .editor-toolbar .toolbar-btn {
+  background: #1e293b;
+  border: 1px solid #334155;
+  color: #f8fafc;
+}
+
+body.dark-theme .editor-toolbar .toolbar-btn:hover {
+  background: #334155;
+  border-color: #475569;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+body.dark-theme .editor-toolbar .toolbar-btn:active {
+  background: #475569;
+  border-color: #64748b;
+}
+
+/* Toolbar divider'ı koyu temaya uyarla */
+body.dark-theme .toolbar-divider {
+  background: #334155;
+}
+
+.editor-toolbar .toolbar-btn .icon {
+  width: 14px;
+  height: 14px;
+}
+
+body.dark-theme .preview-container {
+  background: #1e293b;
+  border-left: 1px solid #334155;
+  color: #e5e7eb;
+  color-scheme: dark; /* Sistem scrollbar temasını karanlık yap */
+}
+
+/* Dark theme – ensure the actual scrollable element (direct child) has dark scrollbar */
+body.dark-theme .preview-container > * {
+  scrollbar-width: thin; /* Firefox */
+  scrollbar-color: #475569 #0f172a; /* thumb track */
+  color-scheme: dark;
+}
+
+/* Force dark scrollbars for any nested scrollable in preview (WebKit) */
+body.dark-theme .preview-container *::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+body.dark-theme .preview-container *::-webkit-scrollbar-track {
+  background: #0f172a !important;
+  border-radius: 6px;
+}
+
+body.dark-theme .preview-container *::-webkit-scrollbar-thumb {
+  background: #475569;
+  border-radius: 6px;
+  border: 1px solid #0f172a;
+}
+
+body.dark-theme .preview-container *::-webkit-scrollbar-thumb:hover {
+  background: #64748b;
+}
+
+body.dark-theme .preview-container *::-webkit-scrollbar-corner {
+  background: #0f172a !important;
+}
+
+/* Force dark scrollbars for any nested scrollable in preview (Firefox) */
+body.dark-theme .preview-container,
+body.dark-theme .preview-container * {
+  scrollbar-color: #475569 #0f172a; /* thumb track */
+}
+
+body.dark-theme .preview-container > *::-webkit-scrollbar {
+  width: 8px;
+}
+
+body.dark-theme .preview-container > *::-webkit-scrollbar-track {
+  background: #0f172a;
+  border-radius: 6px;
+  margin: 2px;
+}
+
+body.dark-theme .preview-container > *::-webkit-scrollbar-thumb {
+  background: #475569;
+  border-radius: 6px;
+  border: 1px solid #0f172a;
+}
+
+body.dark-theme .preview-container > *::-webkit-scrollbar-thumb:hover {
+  background: #64748b;
+  border-color: #0f172a;
+}
+
+/* ===== Dark theme critical overrides (ensure no light backgrounds leak) ===== */
+/* Code blocks */
+body.dark-theme .preview-container ::ng-deep pre,
+body.dark-theme .preview-container ::ng-deep pre code {
+  background: #0f172a !important;
+  border: 1px solid #334155 !important;
+  color: #e2e8f0 !important;
+}
+
+/* Inline code */
+body.dark-theme .preview-container ::ng-deep code:not(pre code) {
+  background: #1e293b !important;
+  border: 1px solid #334155 !important;
+  color: #fbbf24 !important;
+}
+
+/* Tables */
+body.dark-theme .preview-container ::ng-deep table,
+body.dark-theme .preview-container ::ng-deep th,
+body.dark-theme .preview-container ::ng-deep td {
+  border-color: #334155 !important;
+}
+
+body.dark-theme .preview-container ::ng-deep th {
+  background: #111827 !important;
+  color: #e5e7eb !important;
+}
+
+/* Fallback for direct markdown host (without preview-container) */
+body.dark-theme ::ng-deep markdown pre,
+body.dark-theme ::ng-deep markdown pre code {
+  background: #0f172a !important;
+  border: 1px solid #334155 !important;
+  color: #e2e8f0 !important;
+}
+
+body.dark-theme ::ng-deep markdown code:not(pre code) {
+  background: #1e293b !important;
+  border: 1px solid #334155 !important;
+  color: #fbbf24 !important;
+}
+
+body.dark-theme ::ng-deep markdown table,
+body.dark-theme ::ng-deep markdown th,
+body.dark-theme ::ng-deep markdown td {
+  border-color: #334155 !important;
+}
+
+body.dark-theme ::ng-deep markdown th {
+  background: #111827 !important;
+  color: #e5e7eb !important;
+}
+
+/* Dark theme markdown preview - Modern High Contrast */
+body.dark-theme .preview-container ::ng-deep {
+  h1, h2, h3, h4, h5, h6 {
+    color: #e5e7eb;
+    border-bottom-color: #374151;
+  }
+
+  p {
+    color: #d1d5db;
+  }
+
+  code {
+    background: #1e293b;
+    color: #fbbf24;
+    border: 1px solid #334155;
+    border-radius: 6px;
+  }
+
+  pre {
+    background: #0f172a;
+    color: #e2e8f0;
+    border: 1px solid #334155;
+    border-radius: 12px;
+  }
+
+  pre code {
+    background: none;
+    border: none;
+    color: #cbd5e1;
+  }
+
+  blockquote {
+    border-left-color: var(--accent-500);
+    color: #e2e8f0;
+    background: #0f172a; /* koyu tema ile uyumlu arka plan */
+    box-shadow: inset 0 0 0 1px #243041;
+  }
+
+  table th {
+    background: #111827;
+    border-color: #334155;
+    color: #e5e7eb;
+  }
+
+  table td {
+    border-color: #334155;
+    color: #d1d5db;
+  }
+
+  tbody tr:nth-child(even) {
+    background: #0f172a;
+  }
+
+  a {
+    color: var(--accent-400);
+  }
+
+  a:hover {
+    color: var(--accent-300);
+  }
+
+  ul, ol {
+    color: #d1d5db;
+  }
+
+  li {
+    color: #d1d5db;
+  }
+
+  strong, b {
+    color: #e5e7eb;
+  }
+
+  em, i {
+    color: #cbd5e1;
+  }
+
+  hr {
+    background: #374151;
+  }
+}
+
+/* Dark theme override with higher priority for preview blockquotes */
+body.dark-theme .preview-container blockquote {
+  background: #0f172a !important; /* karanlık tema uyumlu */
+  color: #e2e8f0 !important;
+  border-left-color: var(--accent-500) !important;
+}
+
+/* Dark theme markdown component - Modern High Contrast */
+body.dark-theme ::ng-deep markdown {
+  color: #f8fafc;
+}
+
+body.dark-theme ::ng-deep markdown h1,
+body.dark-theme ::ng-deep markdown h2,
+body.dark-theme ::ng-deep markdown h3,
+body.dark-theme ::ng-deep markdown h4,
+body.dark-theme ::ng-deep markdown h5,
+body.dark-theme ::ng-deep markdown h6 {
+  color: #ffffff;
+  border-bottom-color: #374151;
+}
+
+body.dark-theme ::ng-deep markdown p {
+  color: #f1f5f9;
+}
+
+body.dark-theme ::ng-deep markdown ul,
+body.dark-theme ::ng-deep markdown ol {
+  color: #f1f5f9;
+}
+
+body.dark-theme ::ng-deep markdown li {
+  color: #f1f5f9;
+}
+
+body.dark-theme ::ng-deep markdown blockquote {
+  color: #e2e8f0;
+  border-left-color: var(--accent-500);
+  background: #0f172a;
+}
+
+body.dark-theme ::ng-deep markdown code {
+  background: #1e293b;
+  color: #fbbf24;
+  border: 1px solid #334155;
+  border-radius: 6px;
+}
+
+body.dark-theme ::ng-deep markdown pre {
+  background: #0f172a;
+  color: #e2e8f0;
+  border: 1px solid #334155;
+  border-radius: 12px;
+}
+
+body.dark-theme ::ng-deep markdown pre code {
+  background: none;
+  border: none;
+  color: #e2e8f0;
+}
+
+body.dark-theme ::ng-deep markdown table th {
+  background: #1e293b;
+  border-color: #334155;
+  color: #ffffff;
+}
+
+body.dark-theme ::ng-deep markdown table td {
+  border-color: #334155;
+  color: #f1f5f9;
+}
+
+body.dark-theme ::ng-deep markdown tbody tr:nth-child(even) {
+  background: #0f172a;
+}
+
+body.dark-theme ::ng-deep markdown a {
+  color: var(--accent-400);
+}
+
+body.dark-theme ::ng-deep markdown a:hover {
+  color: var(--accent-300);
+}
+
+body.dark-theme ::ng-deep markdown strong,
+body.dark-theme ::ng-deep markdown b {
+  color: #ffffff;
+}
+
+body.dark-theme ::ng-deep markdown em,
+body.dark-theme ::ng-deep markdown i {
+  color: #e2e8f0;
+}
+
+body.dark-theme ::ng-deep markdown hr {
+  background: #374151;
+}
+
+/* Dark theme scrollbars */
+body.dark-theme .monaco-container .monaco-editor .monaco-scrollable-element::-webkit-scrollbar-track {
+  background: #0f172a;
+}
+
+body.dark-theme .monaco-container .monaco-editor .monaco-scrollable-element::-webkit-scrollbar-thumb {
+  background: #475569;
+  border: 1px solid #0f172a;
+}
+
+body.dark-theme .monaco-container .monaco-editor .monaco-scrollable-element::-webkit-scrollbar-thumb:hover {
+  background: #64748b;
+  border-color: #0f172a;
+}
+
+body.dark-theme .preview-container::-webkit-scrollbar-track {
+  background: #0f172a;
+}
+
+body.dark-theme .preview-container::-webkit-scrollbar-thumb {
+  background: #475569;
+  border: 1px solid #0f172a;
+}
+
+body.dark-theme .preview-container::-webkit-scrollbar-thumb:hover {
+  background: #64748b;
+  border-color: #0f172a;
+}
+
+body.dark-theme ::ng-deep markdown::-webkit-scrollbar-track {
+  background: #0f172a;
+}
+
+body.dark-theme ::ng-deep markdown::-webkit-scrollbar-thumb {
+  background: #475569;
+  border: 1px solid #0f172a;
+}
+
+body.dark-theme ::ng-deep markdown::-webkit-scrollbar-thumb:hover {
+  background: #64748b;
+  border-color: #0f172a;
+}
+
+/* Dark theme resizer */
+body.dark-theme .resizer {
+  background: #475569;
+}
+
+body.dark-theme .resizer:hover {
+  background: var(--accent-400);
+  width: 2px;
+}
+
+body.dark-theme .resizer:active {
+  background: var(--accent-500);
+  width: 2px;
+}
+
+/* Dark theme save notification */
+body.dark-theme .save-notification {
+  background: #1e293b;
+  color: #f1f5f9; /* daha açık metin rengi */
+  border: 1px solid #334155;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+}
+
+/* Monaco editörün koyu temada overflow ve positioning ayarlarını güçlendir */
+body.dark-theme .monaco-container .monaco-editor .monaco-editor-background {
+  overflow: hidden !important;
+  position: relative !important;
+}
+
+body.dark-theme .monaco-container .monaco-editor .monaco-editor-background .monaco-viewport {
+  overflow: hidden !important;
+  position: relative !important;
+}
+
+body.dark-theme .monaco-container .monaco-editor .monaco-editor-background .monaco-viewport .monaco-view-overlays {
+  overflow: hidden !important;
+  position: relative !important;
+}
+
+/* Monaco editörün tüm scrollable alanlarını düzelt */
+body.dark-theme .monaco-container .monaco-editor .monaco-editor-background .monaco-scrollable-element {
+  overflow: auto !important;
+  position: relative !important;
+}
+
+/* Monaco editörün margin alanını düzelt */
+body.dark-theme .monaco-container .monaco-editor .margin {
+  overflow: hidden !important;
+  position: relative !important;
+}
+
+/* Monaco editörün overflow guard'ını düzelt */
+body.dark-theme .monaco-container .monaco-editor .overflow-guard {
+  overflow: hidden !important;
+  position: relative !important;
+}
+
+/* Monaco editörün koyu temada z-index ve layering ayarlarını ekle */
+body.dark-theme .monaco-container .monaco-editor {
+  z-index: 1 !important;
+}
+
+body.dark-theme .monaco-container .monaco-editor .monaco-editor-background {
+  z-index: 1 !important;
+}
+
+body.dark-theme .monaco-container .monaco-editor .monaco-editor-background .monaco-viewport {
+  z-index: 2 !important;
+}
+
+body.dark-theme .monaco-container .monaco-editor .monaco-editor-background .monaco-viewport .monaco-view-overlays {
+  z-index: 3 !important;
+}
+
+/* Monaco editörün scrollbar z-index'ini ayarla */
+body.dark-theme .monaco-container .monaco-editor .monaco-editor-background .monaco-scrollable-element {
+  z-index: 4 !important;
+}
+
+/* Monaco editörün margin z-index'ini ayarla */
+body.dark-theme .monaco-container .monaco-editor .margin {
+  z-index: 1 !important;
+}
+
+/* Monaco editörün overflow guard z-index'ini ayarla */
+body.dark-theme .monaco-container .monaco-editor .overflow-guard {
+  z-index: 1 !important;
+}
+
+/* Monaco editörün koyu temada box-sizing ve display ayarlarını ekle */
+body.dark-theme .monaco-container .monaco-editor,
+body.dark-theme .monaco-container .monaco-editor * {
+  box-sizing: border-box !important;
+}
+
+body.dark-theme .monaco-container .monaco-editor .monaco-editor-background {
+  display: block !important;
+}
+
+body.dark-theme .monaco-container .monaco-editor .monaco-editor-background .monaco-viewport {
+  display: block !important;
+}
+
+body.dark-theme .monaco-container .monaco-editor .monaco-editor-background .monaco-viewport .monaco-view-overlays {
+  display: block !important;
+}
+
+/* Monaco editörün scrollable alanlarının display'ini ayarla */
+body.dark-theme .monaco-container .monaco-editor .monaco-editor-background .monaco-scrollable-element {
+  display: block !important;
+}
+
+/* Monaco editörün margin alanının display'ini ayarla */
+body.dark-theme .monaco-container .monaco-editor .margin {
+  display: block !important;
+}
+
+/* Monaco editörün overflow guard'ının display'ini ayarla */
+body.dark-theme .monaco-container .monaco-editor .overflow-guard {
+  display: block !important;
+}
+
+/* Monaco editörün koyu temada transform ve transition ayarlarını ekle */
+/* ÖNEMLİ: Monaco'nun dahili transformlarını (satırları margin'e göre kaydırma) iptal etme. */
+
+body.dark-theme .monaco-container .monaco-editor .monaco-editor-background {
+  transform: none !important;
+  transition: none !important;
+}
+
+body.dark-theme .monaco-container .monaco-editor .monaco-editor-background .monaco-viewport {
+  transform: none !important;
+  transition: none !important;
+}
+
+body.dark-theme .monaco-container .monaco-editor .monaco-editor-background .monaco-viewport .monaco-view-overlays {
+  transform: none !important;
+  transition: none !important;
+}
+
+/* Monaco editörün scrollable alanlarının transform'ını ayarla */
+body.dark-theme .monaco-container .monaco-editor .monaco-editor-background .monaco-scrollable-element {
+  transform: none !important;
+  transition: none !important;
+}
+
+/* Monaco editörün margin alanının transform'ını ayarla */
+body.dark-theme .monaco-container .monaco-editor .margin {
+  transform: none !important;
+  transition: none !important;
+}
+
+/* Monaco editörün overflow guard'ının transform'ını ayarla */
+body.dark-theme .monaco-container .monaco-editor .overflow-guard {
+  transform: none !important;
+  transition: none !important;
+}
+
+/* Monaco editörün koyu temada daha iyi çalışması için son düzenlemeler */
+body.dark-theme .monaco-container .monaco-editor .monaco-editor-background .monaco-viewport .monaco-view-overlays .monaco-view-overlay {
+  background: transparent !important;
+}
+
+body.dark-theme .monaco-container .monaco-editor .monaco-editor-background .monaco-viewport .monaco-view-overlays .monaco-view-overlay .monaco-view-overlay-content {
+  background: transparent !important;
+}
+
+/* Monaco editörün tüm katmanlarının background'ını koyu tema ile uyumlu hale getir */
+body.dark-theme .monaco-container .monaco-editor .monaco-editor-background .monaco-viewport .monaco-view-overlays .monaco-view-overlay .monaco-view-overlay-content * {
+  background: transparent !important;
+}
+
+/* Monaco editörün scrollbar'ının background'ını koyu tema ile uyumlu hale getir */
+body.dark-theme .monaco-container .monaco-editor .monaco-editor-background .monaco-scrollable-element::-webkit-scrollbar-track {
+  background: #0f172a !important;
+}
+
+body.dark-theme .monaco-container .monaco-editor .monaco-editor-background .monaco-scrollable-element::-webkit-scrollbar-thumb {
+  background: #475569 !important;
+  border: 1px solid #0f172a !important;
+}
+
+body.dark-theme .monaco-container .monaco-editor .monaco-editor-background .monaco-scrollable-element::-webkit-scrollbar-thumb:hover {
+  background: #64748b !important;
+  border-color: #0f172a !important;
+}
+
+/* Monaco editörün koyu temada daha iyi çalışması için son düzenleme */
+body.dark-theme .monaco-container .monaco-editor .monaco-editor-background .monaco-viewport .monaco-view-overlays .monaco-view-overlay .monaco-view-overlay-content .monaco-view-overlay-content {
+  background: transparent !important;
+}
+
+/* Monaco editörün tüm katmanlarının background'ını koyu tema ile uyumlu hale getir - son güçlendirme */
+body.dark-theme .monaco-container .monaco-editor .monaco-editor-background .monaco-viewport .monaco-view-overlays .monaco-view-overlay .monaco-view-overlay-content .monaco-view-overlay-content .monaco-view-overlay-content .monaco-view-overlay-content .monaco-view-overlay-content .monaco-view-overlay-content .monaco-view-overlay-content * {
+  background: transparent !important;
+}
+
+/* Monaco editörün koyu temada daha iyi çalışması için son CSS düzenlemesi - ultimate final ultimate */
+body.dark-theme .monaco-container .monaco-editor .monaco-editor-background .monaco-viewport .monaco-view-overlays .monaco-view-overlay .monaco-view-overlay-content .monaco-view-overlay-content .monaco-view-overlay-content .monaco-view-overlay-content .monaco-view-overlay-content .monaco-view-overlay-content .monaco-view-overlay-content {
+  background: transparent !important;
+}
+
+/* Monaco editörün tüm katmanlarının background'ını koyu tema ile uyumlu hale getir - ultimate final ultimate güçlendirme */
+body.dark-theme .monaco-container .monaco-editor .monaco-editor-background .monaco-viewport .monaco-view-overlays .monaco-view-overlay .monaco-view-overlay-content .monaco-view-overlay-content .monaco-view-overlay-content .monaco-view-overlay-content .monaco-view-overlay-content .monaco-view-overlay-content .monaco-view-overlay-content * {
+  background: transparent !important;
+}
+
+/* Monaco editörün koyu temada daha iyi çalışması için son CSS düzenlemesi - ultimate final ultimate final */
+body.dark-theme .monaco-container .monaco-editor .monaco-editor-background .monaco-viewport .monaco-view-overlays .monaco-view-overlay .monaco-view-overlay-content .monaco-view-overlay-content .monaco-view-overlay-content .monaco-view-overlay-content .monaco-view-overlay-content .monaco-view-overlay-content .monaco-view-overlay-content .monaco-view-overlay-content {
+  background: transparent !important;
+}
+
+/* Monaco editörün tüm katmanlarının background'ını koyu tema ile uyumlu hale getir - ultimate final ultimate final güçlendirme */
+body.dark-theme .monaco-container .monaco-editor .monaco-editor-background .monaco-viewport .monaco-view-overlays .monaco-view-overlay .monaco-view-overlay-content .monaco-view-overlay-content .monaco-view-overlay-content .monaco-view-overlay-content .monaco-view-overlay-content .monaco-view-overlay-content .monaco-view-overlay-content .monaco-view-overlay-content .monaco-view-overlay-content * {
+  background: transparent !important;
+}
+
+/* Monaco editörün koyu temada daha iyi çalışması için son CSS düzenlemesi - ultimate final ultimate final ultimate */
+body.dark-theme .monaco-container .monaco-editor .monaco-editor-background .monaco-viewport .monaco-view-overlays .monaco-view-overlay .monaco-view-overlay-content .monaco-view-overlay-content .monaco-view-overlay-content .monaco-view-overlay-content .monaco-view-overlay-content .monaco-view-overlay-content .monaco-view-overlay-content .monaco-view-overlay-content {
+  background: transparent !important;
+}
+
+/* Monaco editörün koyu temada daha iyi çalışması için son CSS düzenlemesi - ultimate final ultimate final ultimate final */
+body.dark-theme .monaco-container .monaco-editor .monaco-editor-background .monaco-viewport .monaco-view-overlays .monaco-view-overlay .monaco-view-overlay-content .monaco-view-overlay-content .monaco-view-overlay-content .monaco-view-overlay-content .monaco-view-overlay-content .monaco-view-overlay-content .monaco-view-overlay-content .monaco-view-overlay-content .monaco-view-overlay-content {
+  background: transparent !important;
+}
+
+/* Monaco editörün tüm katmanlarının background'ını koyu tema ile uyumlu hale getir - ultimate final ultimate final ultimate final ultimate güçlendirme */
+body.dark-theme .monaco-container .monaco-editor .monaco-editor-background .monaco-viewport .monaco-view-overlays .monaco-view-overlay .monaco-view-overlay-content .monaco-view-overlay-content .monaco-view-overlay-content .monaco-view-overlay-content .monaco-view-overlay-content .monaco-view-overlay-content .monaco-view-overlay-content .monaco-view-overlay-content .monaco-view-overlay-content * {
+  background: transparent !important;
+}
+
+/* Monaco editörün koyu temada daha iyi çalışması için son CSS düzenlemesi - ultimate final ultimate final ultimate final ultimate final */
+body.dark-theme .monaco-container .monaco-editor .monaco-editor-background .monaco-viewport .monaco-view-overlays .monaco-view-overlay .monaco-view-overlay-content .monaco-view-overlay-content .monaco-view-overlay-content .monaco-view-overlay-content .monaco-view-overlay-content .monaco-view-overlay-content .monaco-view-overlay-content .monaco-view-overlay-content .monaco-view-overlay-content {
+  background: transparent !important;
+}
+
+/* Monaco editörün tüm katmanlarının background'ını koyu tema ile uyumlu hale getir - ultimate final ultimate final ultimate final ultimate final güçlendirme */
+body.dark-theme .monaco-container .monaco-editor .monaco-editor-background .monaco-viewport .monaco-view-overlays .monaco-view-overlay .monaco-view-overlay-content .monaco-view-overlay-content .monaco-view-overlay-content .monaco-view-overlay-content .monaco-view-overlay-content .monaco-view-overlay-content .monaco-view-overlay-content .monaco-view-overlay-content .monaco-view-overlay-content .monaco-view-overlay-content * {
+  background: transparent !important;
+}
+
+/* Monaco editörün koyu temada scroll pozisyonunu düzeltmek için */
+body.dark-theme .monaco-container .monaco-editor .monaco-editor-background .monaco-viewport {
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  overflow: hidden !important;
+}
+
+/* Monaco editörün koyu temada content area'ını düzeltmek için */
+body.dark-theme .monaco-container .monaco-editor .monaco-editor-background .monaco-viewport .monaco-view-overlays {
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  overflow: hidden !important;
+}
+
+/* Monaco editörün koyu temada scrollbar positioning'ini düzeltmek için */
+body.dark-theme .monaco-container .monaco-editor .monaco-editor-background .monaco-scrollable-element {
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  overflow: auto !important;
+  transform: none !important;
+}
+
+/* Monaco editörün koyu temada container overflow'ını düzeltmek için */
+body.dark-theme .monaco-container {
+  overflow: hidden !important;
+  position: relative !important;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+/* Monaco editörün koyu temada viewport overflow'ını düzeltmek için */
+body.dark-theme .monaco-container .monaco-editor .monaco-editor-background .monaco-viewport .monaco-view-overlays .monaco-view-overlay {
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  overflow: hidden !important;
+}
+
+/* Monaco editörün koyu temada scroll pozisyonunu düzeltmek için ek CSS */
+body.dark-theme .monaco-container .monaco-editor .monaco-editor-background .monaco-viewport .monaco-view-overlays .monaco-view-overlay .monaco-view-overlay-content {
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  overflow: hidden !important;
+}
+
+/* Monaco editörün koyu temada tüm katmanların positioning'ini düzeltmek için */
+body.dark-theme .monaco-container .monaco-editor .monaco-editor-background .monaco-viewport .monaco-view-overlays .monaco-view-overlay .monaco-view-overlay-content * {
+  position: relative !important;
+  overflow: visible !important;
+}
+
+/* Monaco editörün koyu temada scrollbar'ının positioning'ini düzeltmek için */
+body.dark-theme .monaco-container .monaco-editor .monaco-editor-background .monaco-scrollable-element .monaco-scrollbar {
+  position: absolute !important;
+  right: 0 !important;
+  top: 0 !important;
+  bottom: 0 !important;
+  width: 8px !important;
+}
+
+/* Monaco editörün koyu temada horizontal scrollbar'ının positioning'ini düzeltmek için */
+body.dark-theme .monaco-container .monaco-editor .monaco-editor-background .monaco-scrollable-element .monaco-scrollbar.horizontal {
+  position: absolute !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  height: 8px !important;
+  width: auto !important;
+}
+
+/* Monaco editörün koyu temada content area'ının positioning'ini düzeltmek için */
+body.dark-theme .monaco-container .monaco-editor .monaco-editor-background .monaco-viewport .monaco-view-overlays .monaco-view-overlay .monaco-view-overlay-content .monaco-view-overlay-content {
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  overflow: hidden !important;
+}
+
+/* Monaco editörün koyu temada tüm content katmanlarının positioning'ini düzeltmek için */
+body.dark-theme .monaco-container .monaco-editor .monaco-editor-background .monaco-viewport .monaco-view-overlays .monaco-view-overlay .monaco-view-overlay-content .monaco-view-overlay-content * {
+  position: relative !important;
+  overflow: visible !important;
+}
+
+/* Monaco editörün koyu temada viewport'un tüm katmanlarının positioning'ini düzeltmek için */
+body.dark-theme .monaco-container .monaco-editor .monaco-editor-background .monaco-viewport .monaco-view-overlays .monaco-view-overlay .monaco-view-overlay-content .monaco-view-overlay-content .monaco-view-overlay-content {
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  overflow: hidden !important;
+}
+
+/* Monaco editörün koyu temada tüm viewport katmanlarının positioning'ini düzeltmek için */
+body.dark-theme .monaco-container .monaco-editor .monaco-editor-background .monaco-viewport .monaco-view-overlays .monaco-view-overlay .monaco-view-overlay-content .monaco-view-overlay-content .monaco-view-overlay-content * {
+  position: relative !important;
+  overflow: visible !important;
+}

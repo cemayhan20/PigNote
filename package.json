@@ -1,0 +1,47 @@
+{
+  "name": "frontend",
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "ng": "ng",
+    "dev": "ng serve --port 4300",
+    "start": "ng serve",
+    "build": "ng build",
+    "tauri": "cargo tauri dev",
+    "test": "ng test"
+  },
+  "private": true,
+  "dependencies": {
+    "@angular/common": "^20.1.0",
+    "@angular/compiler": "^20.1.0",
+    "@angular/core": "^20.1.0",
+    "@angular/forms": "^20.1.0",
+    "@angular/platform-browser": "^20.1.0",
+    "@angular/router": "^20.1.0",
+    "@tauri-apps/api": "^2.7.0",
+    "highlight.js": "^11.11.1",
+    "markdown-it": "^14.1.0",
+    "monaco-editor": "^0.52.2",
+    "ngx-markdown": "^20.0.0",
+    "rxjs": "~7.8.0",
+    "tslib": "^2.3.0",
+    "zone.js": "~0.15.0"
+  },
+  "devDependencies": {
+    "@angular/build": "^20.1.4",
+    "@angular/cli": "^20.1.4",
+    "@angular/compiler-cli": "^20.1.0",
+    "@babel/core": "^7.28.0",
+    "@babel/types": "^7.28.2",
+    "@tauri-apps/cli": "^2.7.1",
+    "@types/jasmine": "~5.1.0",
+    "@types/node": "^24.2.0",
+    "jasmine-core": "~5.8.0",
+    "karma": "~6.4.0",
+    "karma-chrome-launcher": "~3.2.0",
+    "karma-coverage": "~2.2.0",
+    "karma-jasmine": "~5.1.0",
+    "karma-jasmine-html-reporter": "~2.1.0",
+    "typescript": "~5.8.2"
+  }
+}

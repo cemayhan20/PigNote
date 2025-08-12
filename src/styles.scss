@@ -1,0 +1,757 @@
+@import "monaco-editor/min/vs/editor/editor.main.css";
+
+/* Global Styles with Modern Inter Font */
+* {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  font-size: 14px;
+  line-height: 1.5;
+  font-weight: 400;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overscroll-behavior: none; /* kenarlardan geri çekme davranışını kapat */
+  overflow-x: hidden; /* yatay kaydırmayı kapat */
+}
+
+html, body {
+  height: 100%;
+}
+
+/* Metin seçimi ve sürüklemeyi minimal tut (uygulama hissi) */
+* {
+  -webkit-user-drag: none;
+}
+
+/* Görsel zoom jestlerini kapatmaya yardımcı (Safari/Chromium) */
+html {
+  touch-action: manipulation;
+}
+
+/* Accent (Pink) Theme Variables */
+:root {
+  --accent-50: #fdf2f8;
+  --accent-100: #fce7f3;
+  --accent-200: #fbcfe8;
+  --accent-300: #f9a8d4;
+  --accent-400: #f472b6;
+  --accent-500: #ec4899;
+  --accent-600: #db2777;
+  --accent-700: #be185d;
+  --accent-800: #9d174d;
+  --accent-900: #831843;
+  --accent-950: #500724;
+  --accent-rgb: 236, 72, 153; /* #ec4899 */
+}
+
+body.dark-theme {
+  /* Gerekirse koyu temada aksan tonlarını biraz yumuşat */
+  --accent-400: #f472b6;
+  --accent-500: #ec4899;
+  --accent-600: #db2777;
+  --accent-700: #be185d;
+  --accent-800: #9d174d;
+  --accent-900: #831843;
+  --accent-950: #500724;
+  --accent-rgb: 236, 72, 153;
+}
+
+/* Font weight utilities */
+.font-light {
+  font-weight: 300;
+}
+
+.font-normal {
+  font-weight: 400;
+}
+
+.font-medium {
+  font-weight: 500;
+}
+
+.font-semibold {
+  font-weight: 600;
+}
+
+.font-bold {
+  font-weight: 700;
+}
+
+/* Ensure all elements use Inter font */
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed, 
+figure, figcaption, footer, header, hgroup, 
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+}
+
+/* ===== DARK THEME ===== */
+body.dark-theme {
+  background: #0a0a0a;
+  color: #f8fafc;
+}
+
+/* Editor toolbar dark override (global, high-specificity to bypass encapsulation) */
+body.dark-theme app-editor .editor-toolbar,
+.dark-theme app-editor .editor-toolbar {
+  background: rgb(15, 15, 15) !important;
+  border-bottom: 1px solid #2a2a2a !important;
+}
+
+/* Ana container'lar için karanlık tema */
+body.dark-theme .app-container,
+body.dark-theme .app-main {
+  background: #0a0a0a;
+}
+
+/* Toolbar karanlık tema */
+body.dark-theme .app-toolbar {
+  background: #121212; /* üst alan daha nötr koyu gri */
+  border-bottom: 1px solid #262626;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.28);
+}
+
+body.dark-theme .app-title {
+  color: #ffffff;
+}
+
+body.dark-theme .toolbar-btn {
+  background: #171717;
+  border: 1px solid #2a2a2a;
+  color: #f8fafc;
+}
+
+body.dark-theme .toolbar-btn:hover {
+  background: #222222;
+  border-color: #333333;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.26);
+}
+
+/* File panel karanlık tema */
+body.dark-theme .file-panel {
+  background: #101010; /* dosya gezgini alanı */
+  border-right: 1px solid #242424;
+}
+
+body.dark-theme .panel-content {
+  background: #111111;
+}
+
+body.dark-theme .theme-switch {
+  background: #101010;
+  border-top: 1px solid #242424;
+}
+
+body.dark-theme .theme-toggle {
+  background: #161616;
+}
+
+body.dark-theme .theme-toggle:hover {
+  background: #202020;
+}
+
+body.dark-theme .theme-label {
+  color: #f8fafc;
+}
+
+/* Editor section karanlık tema */
+body.dark-theme .editor-section {
+  background: #0a0a0a; /* editor/preview hariç istenmediği için sadece sınır korunuyor */
+  border-left: 1px solid #242424;
+}
+
+/* Monaco container karanlık tema */
+body.dark-theme .monaco-container {
+  background: #1a1a1a;
+  border-right: 1px solid #2a2a2a;
+  width: 50%;
+  min-width: 300px;
+}
+
+/* Preview container karanlık tema */
+body.dark-theme .preview-container {
+  background: #1a1a1a;
+  border-left: 1px solid #4e4e4e;
+  color: #838485;
+}
+
+/* Resizer karanlık tema */
+body.dark-theme .resizer {
+  background: #374151;
+}
+
+body.dark-theme .resizer:hover {
+  background: #4b5563;
+}
+
+/* Loading overlay karanlık tema */
+body.dark-theme .loading-content {
+  background: #0a0a0a;
+  color: #f8fafc;
+  border: 1px solid #2a2a2a;
+}
+
+body.dark-theme .loading-text {
+  color: #f8fafc;
+}
+
+body.dark-theme .loading-subtext {
+  color: #9ca3af;
+}
+
+body.dark-theme .loading-spinner-large svg {
+  color: var(--accent-400);
+}
+
+/* Dialog bileşenleri için karanlık tema */
+body.dark-theme .dialog-overlay,
+body.dark-theme .new-file-dialog-overlay,
+body.dark-theme .new-folder-dialog-overlay,
+body.dark-theme .delete-file-dialog-overlay,
+body.dark-theme .export-dialog-overlay {
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(4px);
+}
+
+/* Dark theme dialog typography fixes (yüksek özgüllük gerektiren yerler için) */
+body.dark-theme .dialog-header h1,
+body.dark-theme .dialog-header h2,
+body.dark-theme .dialog-header h3,
+body.dark-theme .dialog-header h4,
+body.dark-theme .dialog-header h5,
+body.dark-theme .dialog-header h6 {
+  color: #f8fafc !important;
+}
+
+body.dark-theme .dialog-content h1,
+body.dark-theme .dialog-content h2,
+body.dark-theme .dialog-content h3,
+body.dark-theme .dialog-content h4,
+body.dark-theme .dialog-content h5,
+body.dark-theme .dialog-content h6 {
+  color: #f1f5f9 !important;
+}
+
+body.dark-theme .dialog-content label {
+  color: #e5e7eb !important;
+}
+
+body.dark-theme .dialog-container,
+body.dark-theme .new-file-dialog,
+body.dark-theme .new-folder-dialog,
+body.dark-theme .delete-file-dialog,
+body.dark-theme .export-dialog {
+  background: #0a0a0a;
+  border: 1px solid #2a2a2a;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
+}
+
+body.dark-theme .dialog-header,
+body.dark-theme .new-file-dialog .dialog-header,
+body.dark-theme .new-folder-dialog .dialog-header,
+body.dark-theme .delete-file-dialog .dialog-header,
+body.dark-theme .export-dialog .dialog-header {
+  background: #0a0a0a;
+  border-bottom: 1px solid #2a2a2a;
+}
+
+body.dark-theme .dialog-title,
+body.dark-theme .new-file-dialog h3,
+body.dark-theme .new-folder-dialog h3,
+body.dark-theme .delete-file-dialog h3,
+body.dark-theme .export-dialog h3 {
+  color: #9ca3af;
+}
+
+body.dark-theme .dialog-close,
+body.dark-theme .close-btn {
+  color: #9ca3af;
+}
+
+body.dark-theme .dialog-close:hover,
+body.dark-theme .close-btn:hover {
+  color: #ffffff;
+  background: #1f2937;
+}
+
+body.dark-theme .dialog-content,
+body.dark-theme .new-file-dialog .dialog-content,
+body.dark-theme .new-folder-dialog .dialog-content,
+body.dark-theme .delete-file-dialog .dialog-content,
+body.dark-theme .export-dialog .dialog-content {
+  background: #0a0a0a;
+  color: #f8fafc;
+}
+
+body.dark-theme .dialog-footer,
+body.dark-theme .dialog-actions {
+  background: #0a0a0a;
+  border-top: 1px solid #2a2a2a;
+}
+body.dark-theme .new-file-dialog-overlay,
+body.dark-theme .new-folder-dialog-overlay,
+body.dark-theme .delete-file-dialog-overlay,
+body.dark-theme .export-dialog-overlay {
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(4px);
+}
+
+body.dark-theme .dialog-container,
+body.dark-theme .new-file-dialog,
+body.dark-theme .new-folder-dialog,
+body.dark-theme .delete-file-dialog,
+body.dark-theme .export-dialog {
+  background: #0a0a0a;
+  border: 1px solid #2a2a2a;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
+}
+
+body.dark-theme .dialog-header,
+body.dark-theme .new-file-dialog .dialog-header,
+body.dark-theme .new-folder-dialog .dialog-header,
+body.dark-theme .delete-file-dialog .dialog-header,
+body.dark-theme .export-dialog .dialog-header {
+  background: #0a0a0a;
+  border-bottom: 1px solid #2a2a2a;
+}
+
+body.dark-theme .dialog-title,
+body.dark-theme .new-file-dialog h3,
+body.dark-theme .new-folder-dialog h3,
+body.dark-theme .delete-file-dialog h3,
+body.dark-theme .export-dialog h3 {
+  color: #9ca3af;
+}
+
+body.dark-theme .dialog-close,
+body.dark-theme .close-btn {
+  color: #9ca3af;
+}
+
+body.dark-theme .dialog-close:hover,
+body.dark-theme .close-btn:hover {
+  color: #ffffff;
+  background: #1f2937;
+}
+
+body.dark-theme .dialog-content,
+body.dark-theme .new-file-dialog .dialog-content,
+body.dark-theme .new-folder-dialog .dialog-content,
+body.dark-theme .delete-file-dialog .dialog-content,
+body.dark-theme .export-dialog .dialog-content {
+  background: #0a0a0a;
+  color: #f8fafc;
+}
+
+body.dark-theme .dialog-footer,
+body.dark-theme .dialog-actions {
+  background: #0a0a0a;
+  border-top: 1px solid #2a2a2a;
+}
+
+/* Form elemanları için karanlık tema */
+body.dark-theme input,
+body.dark-theme textarea,
+body.dark-theme select,
+body.dark-theme .filename-input {
+  background: #1f2937;
+  border: 1px solid #374151;
+  color: #f8fafc;
+}
+
+/* Dark theme - selection controls (checkbox & radio) */
+body.dark-theme input[type="checkbox"],
+body.dark-theme input[type="radio"] {
+  accent-color: var(--accent-500);
+  background-color: #334155;
+  border-color: #475569;
+}
+
+body.dark-theme input[type="checkbox"]:disabled,
+body.dark-theme input[type="radio"]:disabled {
+  opacity: 0.6;
+}
+
+body.dark-theme input:focus,
+body.dark-theme textarea:focus,
+body.dark-theme select:focus,
+body.dark-theme .filename-input:focus {
+  border-color: var(--accent-400);
+  box-shadow: 0 0 0 2px rgba(var(--accent-rgb), 0.2);
+}
+
+body.dark-theme input::placeholder,
+body.dark-theme textarea::placeholder {
+  color: #9ca3af;
+}
+
+/* File type cards için karanlık tema */
+body.dark-theme .file-type-card {
+  background: #1f2937;
+  border: 1px solid var(--accent-500);
+  color: #f8fafc;
+}
+
+body.dark-theme .file-type-card:hover {
+  background: #374151;
+  border-color: var(--accent-400);
+}
+
+body.dark-theme .file-type-option input[type="radio"]:checked + .file-type-card {
+  background: var(--accent-700);
+  border-color: var(--accent-500);
+  color: #ffffff;
+}
+
+/* Full filename display için karanlık tema */
+body.dark-theme .full-filename-display {
+  background: #1f2937;
+  border: 1px solid #374151;
+  color: #f8fafc;
+}
+
+/* Form groups için karanlık tema */
+body.dark-theme .form-group label {
+  color: #f8fafc;
+}
+
+/* Buton stilleri için karanlık tema */
+body.dark-theme .btn-primary {
+  background: var(--accent-600);
+  border: 1px solid var(--accent-500);
+  color: #ffffff;
+}
+
+body.dark-theme .btn-primary:hover {
+  background: var(--accent-700);
+  border-color: var(--accent-400);
+}
+
+body.dark-theme .btn-secondary {
+  background: #374151;
+  border: 1px solid #4b5563;
+  color: #f8fafc;
+}
+
+body.dark-theme .btn-secondary:hover {
+  background: #4b5563;
+  border-color: #6b7280;
+}
+
+body.dark-theme .btn-danger {
+  background: #dc2626;
+  border: 1px solid #ef4444;
+  color: #ffffff;
+}
+
+body.dark-theme .btn-danger:hover {
+  background: #b91c1c;
+  border-color: #f87171;
+}
+
+/* Full filename display için karanlık tema */
+body.dark-theme .full-filename-display {
+  background: #1f2937;
+  border: 1px solid #374151;
+  color: #f8fafc;
+}
+
+/* Form groups için karanlık tema */
+body.dark-theme .form-group label {
+  color: #f8fafc;
+}
+
+/* Notification bileşenleri için karanlık tema */
+body.dark-theme .notification {
+  background: #0a0a0a;
+  border: 1px solid #2a2a2a;
+  color: #f8fafc;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+}
+
+body.dark-theme .notification.success {
+  background: #064e3b;
+  border-color: #059669;
+  color: #d1fae5;
+}
+
+body.dark-theme .notification.error {
+  background: #450a0a;
+  border-color: #dc2626;
+  color: #fca5a5;
+}
+
+body.dark-theme .notification.warning {
+  background: #451a03;
+  border-color: #d97706;
+  color: #fed7aa;
+}
+
+body.dark-theme .notification.info {
+  background: #3a0a1f;
+  border-color: var(--accent-700);
+  color: var(--accent-200);
+}
+
+/* Dropdown ve menü bileşenleri için karanlık tema */
+body.dark-theme .dropdown-menu {
+  background: #0a0a0a;
+  border: 1px solid #2a2a2a;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+}
+
+body.dark-theme .dropdown-item {
+  color: #f8fafc;
+}
+
+body.dark-theme .dropdown-item:hover {
+  background: #1f2937;
+  color: #ffffff;
+}
+
+/* Modal ve overlay bileşenleri için karanlık tema */
+body.dark-theme .modal-overlay {
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(4px);
+}
+
+body.dark-theme .modal-container {
+  background: #0a0a0a;
+  border: 1px solid #2a2a2a;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
+}
+
+/* Tooltip bileşenleri için karanlık tema */
+body.dark-theme .tooltip {
+  background: #1f2937;
+  border: 1px solid #374151;
+  color: #f8fafc;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+/* Progress bar bileşenleri için karanlık tema */
+body.dark-theme .progress-bar {
+  background: #1f2937;
+  border: 1px solid #374151;
+}
+
+body.dark-theme .progress-fill {
+  background: var(--accent-400);
+}
+
+/* Toggle switch bileşenleri için karanlık tema */
+body.dark-theme .toggle-track {
+  background: #374151;
+}
+
+body.dark-theme .toggle-track.active {
+  background: var(--accent-400);
+}
+
+body.dark-theme .toggle-thumb {
+  background: #ffffff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+/* File explorer specific dark theme */
+body.dark-theme .file-explorer {
+  background: #0a0a0a !important;
+  border-right: 1px solid #2a2a2a;
+}
+
+body.dark-theme .folder-header {
+  background: #111111 !important;
+  border-bottom: 1px solid #242424;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.24);
+}
+
+body.dark-theme .folder-title {
+  color: #ffffff;
+}
+
+body.dark-theme .action-btn {
+  color: #9ca3af;
+}
+
+body.dark-theme .action-btn:hover {
+  background: #1a1a1a;
+  color: #ffffff;
+}
+
+body.dark-theme .path-bar {
+  background: #101010 !important;
+  border-bottom: 1px solid #242424;
+  color: #9ca3af;
+}
+
+body.dark-theme .path-segment {
+  color: #9ca3af;
+}
+
+body.dark-theme .path-segment:hover {
+  background: #1f2937;
+  color: #ffffff;
+}
+
+body.dark-theme .path-segment.active {
+  background: var(--accent-700);
+  color: var(--accent-200);
+  font-weight: 600;
+}
+
+body.dark-theme .path-separator {
+  stroke: #6b7280;
+}
+
+body.dark-theme .file-list {
+  background: #101010 !important;
+}
+
+body.dark-theme .file-item {
+  border-bottom: 1px solid #1f1f1f;
+  background: #101010 !important;
+}
+
+body.dark-theme .file-item:hover {
+  background: #1a1a1a;
+  border-radius: 8px;
+  margin: 2px 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.26);
+}
+
+body.dark-theme .file-item.selected {
+  background: var(--accent-700);
+  color: var(--accent-200);
+  border: 1px solid var(--accent-500);
+  box-shadow: 0 4px 12px rgba(var(--accent-rgb), 0.3);
+}
+
+body.dark-theme .file-item.directory {
+  color: var(--accent-400);
+}
+
+body.dark-theme .file-item.directory .file-name {
+  color: var(--accent-400);
+  font-weight: 600;
+}
+
+body.dark-theme .file-item.directory:hover {
+  background: var(--accent-700);
+}
+
+body.dark-theme .file-name {
+  color: #f3f4f6;
+}
+
+body.dark-theme .file-details {
+  color: #9ca3af;
+}
+
+body.dark-theme .file-item.selected .file-name {
+  color: #ffffff;
+  font-weight: 600;
+}
+
+body.dark-theme .file-item.selected .file-details {
+  color: var(--accent-200);
+}
+
+body.dark-theme .btn-delete {
+  color: #ef4444;
+}
+
+body.dark-theme .btn-delete:hover {
+  background: #450a0a;
+  color: #fca5a5;
+}
+
+/* Dark theme scrollbars */
+body.dark-theme .file-list::-webkit-scrollbar-track {
+  background: #0a0a0a;
+}
+
+body.dark-theme .file-list::-webkit-scrollbar-thumb {
+  background: #374151;
+  border: 2px solid #0a0a0a;
+}
+
+body.dark-theme .file-list::-webkit-scrollbar-thumb:hover {
+  background: #4b5563;
+}
+
+body.dark-theme .file-list::-webkit-scrollbar-corner {
+  background: #0a0a0a;
+}
+
+/* Global dark-theme scrollbars (for page/rightmost scrollbar) */
+body.dark-theme,
+body.dark-theme .app-container,
+body.dark-theme .app-main {
+  scrollbar-width: thin; /* Firefox */
+  scrollbar-color: #323335 #0f172a; /* thumb track */
+}
+
+body.dark-theme ::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+body.dark-theme ::-webkit-scrollbar-track {
+  background: #0f172a !important;
+}
+
+body.dark-theme ::-webkit-scrollbar-thumb {
+  background: #475569;
+  border: 1px solid #0f172a;
+  border-radius: 6px;
+}
+
+body.dark-theme ::-webkit-scrollbar-thumb:hover {
+  background: #64748b;
+}
+
+body.dark-theme ::-webkit-scrollbar-corner {
+  background: #222326 !important;
+}
+
+/* Loading and error states for dark theme */
+body.dark-theme .loading,
+body.dark-theme .error,
+body.dark-theme .empty-state {
+  color: #e5e7eb;
+}
+
+body.dark-theme .loading-icon,
+body.dark-theme .error-icon,
+body.dark-theme .empty-icon {
+  stroke: #e5e7eb;
+}
+
+body.dark-theme .error {
+  background: #450a0a;
+  color: #fca5a5;
+  border: 1px solid #dc2626;
+}
+
+/* Toggle button dark theme */
+body.dark-theme .toggle-button {
+  color: #e5e7eb;
+}
+
+body.dark-theme .toggle-button:hover {
+  background: #1f2937;
+  color: #ffffff;
+}
