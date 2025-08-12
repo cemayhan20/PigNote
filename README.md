@@ -1,59 +1,103 @@
-# Frontend
+# PigNote
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 20.1.4.
+PigNote, Angular 20 ve Tauri 2 ile geliştirilmiş, masaüstünde çalışan hızlı ve sade bir Markdown not editörüdür. Monaco Editor ile güçlü düzenleme, anlık önizleme, dosya gezgini ve PDF/HTML/DOCX dışa aktarma özellikleri sunar.
 
-## Development server
+## Özellikler
 
-To start a local development server, run:
+- Monaco Editor tabanlı Markdown düzenleyici
+- Canlı önizleme ve panel boyutlandırma
+- Dosya gezgini ile klasör/dosya yönetimi (oluşturma, silme, yeniden adlandırma)
+- Dışa aktarma: PDF, HTML, DOCX
+- Koyu/Açık tema geçişi
+- Klavye kısayolları (Ctrl+S, Ctrl+B, Ctrl+I, Ctrl+K, Ctrl+Z, Ctrl+Shift+Z)
+- Checklist desteği ve glyph margin tıklaması ile işaretleme
+- Otomatik kaydetme (kısa gecikme ile)
+- Sürükle-bırak dosya açma (Tauri)
+- TR/EN arayüz dili ve yazı tipi boyutu ayarları
 
-```bash
-ng serve
-```
+## Teknoloji Yığını
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+- Angular 20 (standalone bileşenler)
+- Tauri 2 (Rust) masaüstü kabuğu
+- Monaco Editor, ngx-markdown
+- RxJS
 
-## Code scaffolding
+## Gereksinimler
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+- Node.js 18+ (öneri: 20+) ve npm
+- Rust stable toolchain
+- Tauri bağımlılıkları (Windows):
+  - Microsoft Visual C++ Build Tools veya Visual Studio ile Desktop development with C++
+  - WebView2 Runtime
+- Tauri CLI: `npm i -D @tauri-apps/cli` (projede mevcut)
 
-```bash
-ng generate component component-name
-```
-
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
-
-```bash
-ng generate --help
-```
-
-## Building
-
-To build the project run:
-
-```bash
-ng build
-```
-
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
+## Kurulum
 
 ```bash
-ng test
+# Bağımlılıkları yükleyin
+npm install
 ```
 
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
+## Geliştirme
 
 ```bash
-ng e2e
+# Sadece web olarak Angular dev sunucusu (4300)
+npm run dev
+
+# Tauri ile masaüstü uygulaması olarak geliştirme
+# (Angular dev sunucusunu otomatik başlatır)
+npm run tauri
 ```
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+- Tauri dev yapılandırması `src-tauri/tauri.conf.json` içinde:
+  - devUrl: `http://localhost:4300`
+  - beforeDevCommand: `npm run dev`
 
-## Additional Resources
+## Üretim Derlemesi
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+```bash
+# Web derlemesi
+npm run build
+# Çıktı: dist/frontend/browser
+
+# Masaüstü (Tauri) derlemesi
+# (Tauri CLI kurulu olmalı)
+npm run build         # Angular'ı üretime alır
+cargo tauri build     # Tauri paketlemesini yapar
+```
+
+- Paketlenen Tauri çıktıları platforma göre `src-tauri/target/release` altında yer alır.
+- Tauri, `dist/frontend/browser` dizinini uygulama frontend’i olarak kullanır.
+
+## Komutlar
+
+`package.json`:
+- `npm run dev`: Angular dev sunucusu (4300)
+- `npm run start`: Angular dev sunucusu (varsayılan port)
+- `npm run build`: Angular üretim derlemesi
+- `npm run tauri`: Tauri dev (Angular dev’i otomatik başlatır)
+- `npm test`: Angular test
+
+## Kullanım İpuçları
+
+- Kısayollar:
+  - Kaydet: Ctrl+S
+  - Kalın: Ctrl+B
+  - İtalik: Ctrl+I
+  - Bağlantı: Ctrl+K
+  - Geri al/Yinele: Ctrl+Z / Ctrl+Shift+Z
+- Checklist: Satır kenarındaki glyph margin’e tıklayarak “- [ ]” ↔ “- [x]” geçişi
+- Tema: Sağ üstten Koyu/Açık
+- Önizleme ve sol panel: Araç çubuğundan aç/kapat
+- Dışa aktarma: Üst çubuktaki “Dışa Aktar” → PDF/HTML/DOCX
+
+## Yapılandırma
+
+- Ortam dosyaları:
+  - Kök: `.env`, `.env.*` (örnek: `.env.example`)
+  - Tauri: `src-tauri/.env`, `src-tauri/.env.*` (örnek: `src-tauri/.env.example`)
+- .gitignore önemli girdiler:
+  - `dist/`, `src-tauri/target/`, `src-tauri/gen/`, `node_modules/`
+  - `.env` dosyaları, editor/temp dosyaları
+
+## Dizin Yapısı (özet)
