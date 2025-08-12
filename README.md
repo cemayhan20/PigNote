@@ -1,5 +1,7 @@
 # PigNote
 
+![PigNote Icon](src-tauri/icons/Pignote.ico)
+
 PigNote, Angular 20 ve Tauri 2 ile geliştirilmiş, masaüstünde çalışan hızlı ve sade bir Markdown not editörüdür. Monaco Editor ile güçlü düzenleme, anlık önizleme, dosya gezgini ve PDF/HTML/DOCX dışa aktarma özellikleri sunar.
 
 ## Özellikler
