@@ -11,7 +11,13 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [windows-latest, ubuntu-latest, macos-latest]
+        include:
+          - os: windows-latest
+            bundles: nsis
+          - os: ubuntu-latest
+            bundles: appimage,deb
+          - os: macos-latest
+            bundles: dmg
     runs-on: ${{ matrix.os }}
 
     steps:
@@ -55,5 +61,6 @@ jobs:
           releaseBody: 'Otomatik oluşturulan PigNote kurulum dosyaları.'
           releaseDraft: false
           prerelease: false
+          args: --bundles ${{ matrix.bundles }}
 
 
